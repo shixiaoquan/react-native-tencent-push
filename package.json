@@ -1,0 +1,18 @@
+{
+  "name": "react-native-tencent-push",
+  "version": "0.0.1",
+  "description": "react-native sdk for tencent push",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "react-native",
+    "push",
+    "xg",
+    "xinge",
+    "mobile"
+  ],
+  "author": "shixiaoquan",
+  "license": "MIT"
+}
