@@ -4,7 +4,7 @@ import {
 	DeviceEventEmitter
 } from 'react-native';
 
-const XGPushModule = NativeModules.XGPushModule;
+const TencentPushModule = NativeModules.TencentPushModule;
 const listeners = {};
 const receiveCustomMsgEvent = "receivePushMsg";
 const receiveNotificationEvent = "receiveNotification";
@@ -17,12 +17,12 @@ const networkDidLogin = "networkDidLogin"; // iOS Only
 const receiveExtrasEvent = "receiveExtras"; // Android Only
 
 /**
- * Logs message to console with the [XGPush] prefix
+ * Logs message to console with the [TencentPush] prefix
  * @param  {string} message
  */
 const log = (message) => {
-		// console.log(`[XGPush] ${message}`);
-    console.log('[XGPush]', message);
+		// console.log(`[TencentPush] ${message}`);
+    console.log('[TencentPush]', message);
 	}
 	// is function
 const isFunction = (fn) => typeof fn === 'function';
@@ -34,7 +34,7 @@ const isFunction = (fn) => typeof fn === 'function';
  */
 const safeCallback = (fn, success, error) => {
 
-	XGPushModule[fn](function(params) {
+	TencentPushModule[fn](function(params) {
 		log(params);
 		isFunction(success) && success(params)
 	}, function(error) {
@@ -44,7 +44,7 @@ const safeCallback = (fn, success, error) => {
 
 }
 
-export default class XGPush {
+export default class TencentPush {
 
 	/**
      * Android Only
@@ -52,7 +52,7 @@ export default class XGPush {
      * （此接口会覆盖设备之前绑定过的账号，仅当前注册的账号生效）
      */
     static registerPush() {
-        XGPushModule.registerPush((msg)=>{
+        TencentPushModule.registerPush((msg)=>{
             log(msg);
         });
     }
@@ -63,7 +63,7 @@ export default class XGPush {
      * 启动并注册APP
      */
     static bindAccount(account,cb) {
-        XGPushModule.bindAccount(account,(msg)=>{
+        TencentPushModule.bindAccount(account,(msg)=>{
             cb(msg)
         });
     }
@@ -75,7 +75,7 @@ export default class XGPush {
      * （此接口保留之前的账号，只做增加操作，一个token下最多只能有3个账号超过限制会自动顶掉之前绑定的账号）
      */
     static appendAccount(account) {
-        XGPushModule.appendAccount(account,(msg)=>{
+        TencentPushModule.appendAccount(account,(msg)=>{
             log(msg);
         });
     }
@@ -85,7 +85,7 @@ export default class XGPush {
      * 获取设备的token，只有注册成功才能获取到正常的结果
      */
     static getToken(cb) {
-        XGPushModule.getToken((msg)=>{
+        TencentPushModule.getToken((msg)=>{
             cb(msg);
         });
     }
@@ -96,21 +96,21 @@ export default class XGPush {
 	//  * Android Only
 	//  */
 	// static stopPush() {
-	// 	XGPushModule.stopPush();
+	// 	TencentPushModule.stopPush();
 	// }
     //
 	// /**
 	//  * Android Only
 	//  */
 	// static resumePush() {
-	// 	XGPushModule.resumePush();
+	// 	TencentPushModule.resumePush();
 	// }
     //
 	// /**
 	//  * Android Only
 	//  */
 	// static crashLogOFF() {
-	// 	XGPushModule.crashLogOFF();
+	// 	TencentPushModule.crashLogOFF();
 	// }
     //
 
@@ -120,7 +120,7 @@ export default class XGPush {
 	 * @param {Function} cb
 	 */
 	static notifyJSDidLoad(cb) {
-		XGPushModule.notifyJSDidLoad((resultCode) => {
+		TencentPushModule.notifyJSDidLoad((resultCode) => {
 			cb(resultCode);
 		});
 	}
@@ -129,21 +129,21 @@ export default class XGPush {
 	 * Android Only
 	 */
 	static clearAllNotifications() {
-		XGPushModule.cancelAllNotifaction();
+		TencentPushModule.cancelAllNotifaction();
 	}
 
 	/**
 	 * Android Only
 	 */
 	static clearNotificationById(id) {
-		XGPushModule.cancelNotifaction(id);
+		TencentPushModule.cancelNotifaction(id);
 	}
 
     /**
      * Android Only
      */
     static clearLocalNotifications() {
-    	XGPushModule.clearLocalNotifications();
+    	TencentPushModule.clearLocalNotifications();
     }
 
 
@@ -158,11 +158,11 @@ export default class XGPush {
 	static addTag(tag, cb) {
 	    if(Platform.OS === 'ios'){
             console.log(tag);
-            XGPushModule.addTag(tag, (result) => {
+            TencentPushModule.addTag(tag, (result) => {
                 cb(result);
             });
         }else{
-	        XGPushModule.setTag(tag);
+	        TencentPushModule.setTag(tag);
         }
 	}
 
@@ -177,11 +177,11 @@ export default class XGPush {
 	 */
 	static deleteTag(tag, cb) {
 	    if(Platform.OS === 'ios'){
-            XGPushModule.deleteTag(tag, (result) => {
+            TencentPushModule.deleteTag(tag, (result) => {
                 cb(result);
             });
         }else{
-            XGPushModule.deleteTag(tag);
+            TencentPushModule.deleteTag(tag);
         }
 	}
 
@@ -196,7 +196,7 @@ export default class XGPush {
 	 * 
 	 */
 	static getAllTags(cb) {
-		XGPushModule.getAllTags((result) => {
+		TencentPushModule.getAllTags((result) => {
 			cb(result);
 		});
 	}
@@ -212,7 +212,7 @@ export default class XGPush {
      * 如果失败 result = {errorCode: Int}
      */
     static setAccount(tag, cb) {
-        XGPushModule.setAccount(tag, (result) => {
+        TencentPushModule.setAccount(tag, (result) => {
             cb(result);
         });
     }
@@ -228,11 +228,11 @@ export default class XGPush {
      */
     static deleteAccount(account, cb) {
         if(Platform.OS === 'ios'){
-            XGPushModule.deleteAccoun(account, (result) => {
+            TencentPushModule.deleteAccoun(account, (result) => {
                 cb(result);
             });
         }else{
-            XGPushModule.delAccount(account, (result) => {
+            TencentPushModule.delAccount(account, (result) => {
                 cb(result);
             });
         }
@@ -246,7 +246,7 @@ export default class XGPush {
      */
     static bindNone(cb) {
         if(Platform.OS === 'ios'){
-            XGPushModule.bindNone((result) => {
+            TencentPushModule.bindNone((result) => {
                 cb(result);
             });
         }
@@ -257,7 +257,7 @@ export default class XGPush {
      * 反注册
      */
     static unregisterPush(cb) {
-    	XGPushModule.unregisterPush((msg)=>{
+    	TencentPushModule.unregisterPush((msg)=>{
     	    cb(msg);
         });
     }
@@ -267,35 +267,35 @@ export default class XGPush {
 	//  * Android Only
 	//  */
 	// static setStyleBasic() {
-	// 	XGPushModule.setStyleBasic();
+	// 	TencentPushModule.setStyleBasic();
 	// }
     //
 	// /**
 	//  * Android Only
 	//  */
 	// static setStyleCustom() {
-	// 	XGPushModule.setStyleCustom();
+	// 	TencentPushModule.setStyleCustom();
 	// }
     //
 	// /**
 	//  * Android Only
 	//  */
 	// static jumpToPushActivity(activityName) {
-	// 	XGPushModule.jumpToPushActivity(activityName);
+	// 	TencentPushModule.jumpToPushActivity(activityName);
 	// }
     //
 	// /**
 	//  * Android Only
 	//  */
 	// static jumpToPushActivityWithParams(activityName, map) {
-	// 	XGPushModule.jumpToPushActivityWithParams(activityName, map);
+	// 	TencentPushModule.jumpToPushActivityWithParams(activityName, map);
 	// }
     //
 	// /**
 	//  * Android Only
 	//  */
 	// static finishActivity() {
-	// 	XGPushModule.finishActivity();
+	// 	TencentPushModule.finishActivity();
 	// }
 
 	/**
@@ -443,7 +443,7 @@ export default class XGPush {
 	 * @param {Function} cb = (int) => { } // 返回应用 icon badge。
 	 */
 	static getBadge(cb) {
-		XGPushModule.getApplicationIconBadge((badge) => {
+		TencentPushModule.getApplicationIconBadge((badge) => {
 			cb(badge);
 		});
 	}
@@ -460,7 +460,7 @@ export default class XGPush {
 	//  * @param {String} soundName 自定义通知声音，设置为 null 为默认声音
 	//  */
 	// static setLocalNotification(date, textContain, badge, alertAction, notificationKey, userInfo, soundName) {
-	// 	XGPushModule.setLocalNotification(date, textContain, badge, alertAction, notificationKey, userInfo, soundName);
+	// 	TencentPushModule.setLocalNotification(date, textContain, badge, alertAction, notificationKey, userInfo, soundName);
 	// }
 
 	/**
@@ -470,6 +470,6 @@ export default class XGPush {
 	 * @param {Function} cb = () => { } //
 	 */
 	static setBadge(badge, cb) {
-		XGPushModule.setBadge(badge);
+		TencentPushModule.setBadge(badge);
 	}
 }
