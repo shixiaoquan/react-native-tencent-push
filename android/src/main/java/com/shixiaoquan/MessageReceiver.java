@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 /**
- * Created by rain on 2018/3/26.
+ * Created by shixiaoquan on 2018/3/26.
  */
 public class MessageReceiver extends XGPushBaseReceiver {
 

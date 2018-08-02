@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by rain on 2018/3/26.
+ * Created by shixiaoquan on 2018/3/26.
  */
 
 public class TencentPushPackage implements ReactPackage {

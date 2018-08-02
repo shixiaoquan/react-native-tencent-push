@@ -14,15 +14,15 @@ module.exports = {
     //     compile project(':react-native-tencent-push')
     //   `
     // },
-    {
-      pattern: `versionName .*`,
-      patch: `
-        manifestPlaceholders = [
-          XG_ACCESS_ID:"注册应用的accessid",
-          XG_ACCESS_KEY : "注册应用的accesskey",
-        ]
-      `
-    }
+    // {
+    //   pattern: `versionName .*`,
+    //   patch: `
+    //     manifestPlaceholders = [
+    //       XG_ACCESS_ID:"注册应用的accessid",
+    //       XG_ACCESS_KEY : "注册应用的accesskey",
+    //     ]
+    //   `
+    // }
   ],
 
   // 'ios/**/AppDelegate.m': [

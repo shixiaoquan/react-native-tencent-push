@@ -33,7 +33,6 @@ const isFunction = (fn) => typeof fn === 'function';
  * @param  {any} error
  */
 const safeCallback = (fn, success, error) => {
-
 	TencentPushModule[fn](function(params) {
 		log(params);
 		isFunction(success) && success(params)
@@ -41,21 +40,21 @@ const safeCallback = (fn, success, error) => {
 		log(error)
 		isFunction(error) && error(error)
 	})
-
 }
 
 export default class TencentPush {
-
 	/**
      * Android Only
      * 启动并注册APP，同时绑定账号,推荐有帐号体系的APP使用
      * （此接口会覆盖设备之前绑定过的账号，仅当前注册的账号生效）
      */
-    static registerPush() {
-        TencentPushModule.registerPush((msg)=>{
-            log(msg);
-        });
-    }
+	static registerPush(cb) {
+		if(cb){
+			TencentPushModule.registerPush(cb);
+		} else {
+			TencentPushModule.registerPush();
+		}
+	}
 
 
     /**
@@ -63,9 +62,11 @@ export default class TencentPush {
      * 启动并注册APP
      */
     static bindAccount(account,cb) {
-        TencentPushModule.bindAccount(account,(msg)=>{
-            cb(msg)
-        });
+		if(cb) {
+			TencentPushModule.bindAccount(account, cb);
+		} else {
+			TencentPushModule.bindAccount(account);
+		}
     }
 
 
@@ -74,10 +75,12 @@ export default class TencentPush {
      * 启动并注册APP，同时绑定账号,推荐有帐号体系的APP使用
      * （此接口保留之前的账号，只做增加操作，一个token下最多只能有3个账号超过限制会自动顶掉之前绑定的账号）
      */
-    static appendAccount(account) {
-        TencentPushModule.appendAccount(account,(msg)=>{
-            log(msg);
-        });
+    static appendAccount(account, cb) {
+		if(cb) {
+			TencentPushModule.appendAccount(account, cb);
+		}else {
+			TencentPushModule.appendAccount(account);
+		}
     }
 
     /**
@@ -435,6 +438,24 @@ export default class TencentPush {
 		}
 		listeners[cb].remove();
 		listeners[cb] = null;
+	}
+
+	/**
+	 * 配置accessId
+	 * 
+	 * @param {注册的appid} appid 
+	 */
+	static setAccessId(appid) {
+		TencentPushModule.setAccessId(appid);
+	}
+
+	/**
+	 * 配置accessKey
+	 * 
+	 * @param {注册的appkey} appkey
+	 */
+	static setAccessKey(appkey) {
+		TencentPushModule.setAccessKey(appkey);
 	}
 
 

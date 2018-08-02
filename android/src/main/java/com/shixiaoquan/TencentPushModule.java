@@ -28,7 +28,7 @@ import java.util.Set;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 /**
- * Created by rain on 2018/3/26.
+ * Created by shixiaoquan on 2018/3/26.
  */
 
 public class TencentPushModule extends ReactContextBaseJavaModule {
@@ -39,7 +39,6 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     private Context reactContext;
     private int badge = 0;
 
-    private Context mContext;
     private static String mEvent;
     private static Intent mCachedBundle;
     private static ReactApplicationContext mRAC;
@@ -155,7 +154,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
      * @param cb
      */
     @ReactMethod
-    public void registerPush(String account, String ticket, int ticketType, String qua, final Callback cb) {
+    public void registerPush1(String account, String ticket, int ticketType, String qua, final Callback cb) {
         XGPushManager.registerPush(this.reactContext, account, ticket, ticketType, qua, new XGIOperateCallback() {
             @Override
             public void onSuccess(Object date, int flag) {

@@ -2,8 +2,8 @@
 //  RCTXGPushModule.h
 //  RCTXGPushModule
 //
-//  Created by rain on 2018/3/20.
-//  Copyright © 2018年 com.rain.day. All rights reserved.
+//  Created by shixiaoquan on 2018/3/20.
+//  Copyright © 2018年 com.shixiaoquan. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
