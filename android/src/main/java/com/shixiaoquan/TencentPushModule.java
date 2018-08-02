@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -24,6 +23,7 @@ import com.tencent.android.tpush.encrypt.Rijndael;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -47,7 +47,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     private static HashMap<Integer, Callback> sCacheMap = new HashMap<Integer, Callback>();
 
 
-    TencentPushModule(ReactApplicationContext reactContext){
+    TencentPushModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
         registerReceivers();
@@ -72,7 +72,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
         mCachedBundle = null;
-        if(null != sCacheMap){
+        if (null != sCacheMap) {
             sCacheMap.clear();
         }
     }
@@ -90,17 +90,29 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
 
     /*********************************************************************************
      * XGPushManager功能类
+     * 方法默认为public static类型
      *********************************************************************************/
 
     /**
-     * 启动并注册APP
+     * 启动并注册（无注册回调）
+     *
+     */
+    @ReactMethod
+    public void registerPush() {
+        XGPushManager.registerPush(this.reactContext);
+    }
+
+    /**
+     * 启动并注册（有注册回调）
+     *
+     * @param cb
      */
     @ReactMethod
     public void registerPush(final Callback cb) {
         XGPushManager.registerPush(this.reactContext, new XGIOperateCallback() {
             @Override
             public void onSuccess(Object date, int flag) {
-                cb.invoke(0,date);
+                cb.invoke(0, date);
             }
 
             @Override
@@ -111,8 +123,73 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * 启动并注册APP，同时绑定账号,推荐有帐号体系的APP使用
-     * （此接口会覆盖设备之前绑定过的账号，仅当前注册的账号生效）
+     * 启动并注册APP，同时绑定账号,
+     * 推荐有帐号体系的APP使用
+     * （3.2.2不包括3.2.2之前的版本使用，有注册回调）
+     *
+     * @param account
+     * @param cb
+     */
+    @ReactMethod
+    public void registerPush(String account, final Callback cb) {
+        XGPushManager.registerPush(this.reactContext, account, new XGIOperateCallback() {
+            @Override
+            public void onSuccess(Object date, int flag) {
+                cb.invoke(0, date);
+            }
+
+            @Override
+            public void onFail(Object data, int errCode, String msg) {
+                cb.invoke(String.valueOf(errCode), msg);
+            }
+        });
+    }
+
+    /**
+     * 启动并注册APP，同时绑定账号,
+     * 推荐有帐号体系的APP使用
+     * （3.2.2不包括3.2.2之前的版本使用，有注册回调）
+     * 仅供带登陆态的业务使用
+     *
+     * @param account
+     * @param cb
+     */
+    @ReactMethod
+    public void registerPush(String account, String ticket, int ticketType, String qua, final Callback cb) {
+        XGPushManager.registerPush(this.reactContext, account, ticket, ticketType, qua, new XGIOperateCallback() {
+            @Override
+            public void onSuccess(Object date, int flag) {
+                cb.invoke(0, date);
+            }
+
+            @Override
+            public void onFail(Object data, int errCode, String msg) {
+                cb.invoke(String.valueOf(errCode), msg);
+            }
+        });
+    }
+
+    /**
+     * 启动并注册APP，同时绑定账号,
+     * 推荐有帐号体系的APP使用
+     * （3.2.2以及3.2.2之后的版本使用，
+     * 此接口会覆盖设备之前绑定过的账号，仅当前注册的账号生效）,
+     * 无注册回调
+     *
+     * @param account
+     */
+    @ReactMethod
+    public void bindAccount(String account) {
+        XGPushManager.bindAccount(this.reactContext, account);
+    }
+
+    /**
+     * 启动并注册APP，同时绑定账号,
+     * 推荐有帐号体系的APP使用
+     * （3.2.2以及3.2.2之后的版本使用，
+     * 此接口会覆盖设备之前绑定过的账号，仅当前注册的账号生效）,
+     * 有注册回调
+     *
      * @param account
      * @param cb
      */
@@ -122,8 +199,8 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
         XGPushManager.bindAccount(this.reactContext, account, new XGIOperateCallback() {
             @Override
             public void onSuccess(Object date, int flag) {
-                map.putInt("code",0);
-                map.putString("res",date.toString());
+                map.putInt("code", 0);
+                map.putString("res", date.toString());
                 cb.invoke(map);
             }
 
@@ -135,8 +212,27 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * 启动并注册APP，同时绑定账号,推荐有帐号体系的APP使用
-     * （此接口保留之前的账号，只做增加操作，一个token下最多只能有3个账号超过限制会自动顶掉之前绑定的账号）
+     * 启动并注册APP，同时绑定账号,
+     * 推荐有帐号体系的APP使用
+     * （3.2.2以及3.2.2之后的版本使用，
+     * 此接口保留之前的账号，只做增加操作，
+     * 一个token下最多只能有3个账号超过限制会自动顶掉之前绑定的账号，无注册回调）
+     *
+     * @param account
+     */
+    @ReactMethod
+    public void appendAccount(String account) {
+        XGPushManager.appendAccount(this.reactContext, account);
+    }
+
+
+    /**
+     * 启动并注册APP，同时绑定账号,
+     * 推荐有帐号体系的APP使用
+     * （3.2.2以及3.2.2之后的版本使用，
+     * 此接口保留之前的账号，只做增加操作，
+     * 一个token下最多只能有3个账号超过限制会自动顶掉之前绑定的账号，有注册回调）
+     *
      * @param account
      * @param cb
      */
@@ -145,7 +241,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
         XGPushManager.appendAccount(this.reactContext, account, new XGIOperateCallback() {
             @Override
             public void onSuccess(Object date, int flag) {
-                cb.invoke(0,date);
+                cb.invoke(0, date);
             }
 
             @Override
@@ -156,7 +252,18 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * 解绑指定账号
+     * 解绑指定账号（3.2.2以及3.2.2之后的版本使用，有注册回调）
+     *
+     * @param account
+     */
+    @ReactMethod
+    public void delAccount(String account) {
+        XGPushManager.delAccount(this.reactContext, account);
+    }
+
+    /**
+     * 解绑指定账号（3.2.2以及3.2.2之后的版本使用，有注册回调）
+     *
      * @param account
      * @param cb
      */
@@ -165,7 +272,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
         XGPushManager.delAccount(this.reactContext, account, new XGIOperateCallback() {
             @Override
             public void onSuccess(Object date, int flag) {
-                cb.invoke(0,date);
+                cb.invoke(0, date);
             }
 
             @Override
@@ -176,7 +283,8 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * 反注册
+     * 反注册，建议在不需要接收推送的时候调用
+     *
      * @param cb
      */
     @ReactMethod
@@ -187,7 +295,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
                 WritableMap map = Arguments.createMap();
                 map.putString("data", (String) data);
                 map.putInt("flag", flag);
-                cb.invoke(0,map);
+                cb.invoke(0, map);
             }
 
             @Override
@@ -198,7 +306,8 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * 设置tag
+     * 设置标签
+     *
      * @param tagName
      */
     @ReactMethod
@@ -207,7 +316,8 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * 删除tag
+     * 删除标签
+     *
      * @param tagName
      */
     @ReactMethod
@@ -215,6 +325,12 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
         XGPushManager.deleteTag(this.reactContext, tagName);
     }
 
+    /**
+     * 本地通知
+     *
+     * @param title
+     * @param content
+     */
     @ReactMethod
     public void addLocalNotification(String title, String content) {
         XGLocalMessage message = new XGLocalMessage();
@@ -227,51 +343,49 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
 
     /**
      * 检测通知栏是否关闭
+     *
      * @param cb
      */
     @ReactMethod
     public void isNotificationOpened(Callback cb) {
-        cb.invoke(0,XGPushManager.isNotificationOpened(this.reactContext));
-    }
-
-    //todo
-    public void addLocalNotification(){
-        XGLocalMessage localMessage = new XGLocalMessage();
-        XGPushManager.addLocalNotification(this.reactContext,localMessage);
+        cb.invoke(0, XGPushManager.isNotificationOpened(this.reactContext));
     }
 
     /**
-     * 取消所有的通知
+     * 清除通知栏所有通知
      */
     @ReactMethod
-    public void cancelAllNotifaction(){
+    public void cancelAllNotifaction() {
         XGPushManager.cancelAllNotifaction(this.reactContext);
     }
 
     /**
-     * 取消指定的通知
+     * 清除单个通知
+     *
      * @param noticeId
      */
     @ReactMethod
-    public void cancelNotifaction(int noticeId){
-        XGPushManager.cancelNotifaction(this.reactContext,noticeId);
+    public void cancelNotifaction(int noticeId) {
+        XGPushManager.cancelNotifaction(this.reactContext, noticeId);
     }
 
     /**
      * 清除本地通知
      */
     @ReactMethod
-    public void clearLocalNotifications(){
+    public void clearLocalNotifications() {
         XGPushManager.clearLocalNotifications(this.reactContext);
     }
 
     /*****************************************************************
      *                         XGPushConfig配置类
-     * （对于本类提供的set和enable方法，要在XGPushManager接口前调用才能及时生效）
+     * 方法默认为public static类型,
+     * 对于本类提供的set和enable方法，要在XGPushManager接口前调用才能及时生效
      *****************************************************************/
 
     /**
      * 初始化
+     *
      * @param accessId
      * @param accessKey
      */
@@ -294,11 +408,12 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void isEnableDebug(Callback cb) {
-        cb.invoke(0,XGPushConfig.isEnableDebug(this.reactContext));
+        cb.invoke(0, XGPushConfig.isEnableDebug(this.reactContext));
     }
 
     /**
      * 获取设备的token，只有注册成功才能获取到正常的结果
+     *
      * @param cb
      */
     @ReactMethod
@@ -308,6 +423,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
 
     /**
      * 设置上报通知栏是否关闭 默认打开
+     *
      * @param debugMode
      */
     @ReactMethod
@@ -317,6 +433,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
 
     /**
      * 设置上报APP 列表，用于智能推送 默认打开
+     *
      * @param debugMode
      */
     @ReactMethod
@@ -326,7 +443,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setAccessId(String accessId) {
-        try{
+        try {
             XGPushConfig.setAccessId(this.reactContext, Long.parseLong(accessId));
         } catch (NumberFormatException exception) {
             exception.printStackTrace();
@@ -345,6 +462,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
 
     /**
      * 获取accessKey
+     *
      * @return accessKey
      */
     @ReactMethod
@@ -386,19 +504,19 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
         if (activity != null) {
             Intent intent = activity.getIntent();
             try {
-                if(intent != null && intent.hasExtra("protect")) {
+                if (intent != null && intent.hasExtra("protect")) {
                     String title = Rijndael.decrypt(intent.getStringExtra("title"));
                     String content = Rijndael.decrypt(intent.getStringExtra("content"));
                     String customContent = Rijndael.decrypt(intent.getStringExtra("custom_content"));
-                    params.putString("title",  title);
-                    params.putString("content",  content);
-                    params.putString("custom_content",  customContent);
+                    params.putString("title", title);
+                    params.putString("content", content);
+                    params.putString("custom_content", customContent);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        cb.invoke(0,params);
+        cb.invoke(0, params);
     }
 
     @ReactMethod
@@ -412,10 +530,6 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
         ShortcutBadger.applyCount(this.reactContext, number);
     }
 
-
-
-
-
     private void registerReceivers() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.ACTION_ON_REGISTERED);
@@ -426,7 +540,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     }
 
     private static void sendEvent() {
-        if(mRAC != null){
+        if (mRAC != null) {
             if (mEvent != null) {
                 Logger.i(TAG, "Sending event : " + mEvent);
                 WritableMap map = Arguments.createMap();
@@ -454,16 +568,16 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
                         map.putString("custom_content", mCachedBundle.getStringExtra("custom_content"));
                         mRAC.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                                 .emit(mEvent, map);
-                        LocalNotificationCache.getInstance().checkNotificationIdAndRemove(mCachedBundle.getLongExtra("msgId",-123456));
+                        LocalNotificationCache.getInstance().checkNotificationIdAndRemove(mCachedBundle.getLongExtra("msgId", -123456));
                         break;
                 }
                 mEvent = null;
                 mCachedBundle = null;
             }
-            if(!LocalNotificationCache.getInstance().isCacheEmpty()){
+            if (!LocalNotificationCache.getInstance().isCacheEmpty()) {
                 WritableMap mapLocal = Arguments.createMap();
                 Intent localIntent = (Intent) LocalNotificationCache.getInstance().popNotification();
-                Logger.i(TAG, "Sending event : " + Constants.EVENT_OPEN_NOTIFICATION+"  "+localIntent.toString());
+                Logger.i(TAG, "Sending event : " + Constants.EVENT_OPEN_NOTIFICATION + "  " + localIntent.toString());
                 mapLocal = Arguments.createMap();
                 mapLocal.putString("title", localIntent.getStringExtra("title"));
                 mapLocal.putString("content", localIntent.getStringExtra("content"));
@@ -485,8 +599,8 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
             try {
                 WritableMap params = Arguments.createMap();
                 mCachedBundle = intent;
-                Logger.d(TAG,intent.toString());
-                switch (intent.getAction()){
+                Logger.d(TAG, intent.toString());
+                switch (intent.getAction()) {
                     case Constants.ACTION_ON_REGISTERED:
                         mEvent = Constants.EVENT_REGISTERED_ID;
                         intent.getBundleExtra("notification");
@@ -501,7 +615,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
                         String content = intent.getStringExtra("content");
                         String customContent = intent.getStringExtra("custom_content");
 
-                        Logger.i(TAG, "收到自定义消息: title:" + title +" content:"+content+" custom_content:"+customContent);
+                        Logger.i(TAG, "收到自定义消息: title:" + title + " content:" + content + " custom_content:" + customContent);
 
                         params.putString("title", title);
                         params.putString("content", content);
@@ -510,7 +624,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
                         break;
                     case Constants.ACTION_ON_NOTIFICATION_SHOWED:
                         mEvent = Constants.EVENT_REMOTE_NOTIFICATION_RECEIVED;
-                        Logger.i(TAG, "收到推送下来的通知: title:" +intent.getStringExtra("title")+" content"+ intent.getStringExtra("content"));
+                        Logger.i(TAG, "收到推送下来的通知: title:" + intent.getStringExtra("title") + " content" + intent.getStringExtra("content"));
                         Logger.i(TAG, "收到推送下来的通知: custom_content: " + intent.getStringExtra("custom_content"));
                         sendEvent();
                         break;
@@ -525,7 +639,7 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         }
                         Logger.d(TAG, "用户点击打开了通知");
-                        Logger.i(TAG, "用户点击打开了通知: title:" +intent.getStringExtra("title")+" content"+ intent.getStringExtra("content"));
+                        Logger.i(TAG, "用户点击打开了通知: title:" + intent.getStringExtra("title") + " content" + intent.getStringExtra("content"));
                         Logger.i(TAG, "用户点击打开了通知: custom_content: " + intent.getStringExtra("custom_content"));
                         sendEvent();
                         break;
