@@ -85,7 +85,7 @@ public class MessageReceiver extends XGPushBaseReceiver {
     }
 
     /**
-     * 通知被打开触发的结果
+     * 通知被点击触发的回调
      * @param context
      * @param notification
      */
@@ -103,7 +103,6 @@ public class MessageReceiver extends XGPushBaseReceiver {
             bundle.putString("title", notification.getTitle());
             bundle.putString("custom_content", notification.getCustomContent());
             intent.putExtra("notification", bundle);
-
             intent.putExtra("title", notification.getTitle());
             intent.putExtra("content", notification.getContent());
             intent.putExtra("custom_content", notification.getCustomContent());

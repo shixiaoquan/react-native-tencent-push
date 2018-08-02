@@ -412,6 +412,49 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
     }
 
     /**
+     * 配置accessId
+     *
+     * @param accessId
+     */
+    @ReactMethod
+    public void setAccessId(String accessId) {
+        try {
+            XGPushConfig.setAccessId(this.reactContext, Long.parseLong(accessId));
+        } catch (NumberFormatException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取accessId
+     *
+     * @return
+     */
+    @ReactMethod
+    public long getAccessId() {
+        return XGPushConfig.getAccessId(this.reactContext);
+    }
+
+    /**
+     * 配置accessKey
+     *
+     * @param accessKey
+     */
+    @ReactMethod
+    public void setAccessKey(String accessKey) {
+        XGPushConfig.setAccessKey(this.reactContext, accessKey);
+    }
+
+    /**
+     * 获取accessKey
+     *
+     */
+    @ReactMethod
+    public void getAccessKey() {
+        XGPushConfig.getAccessKey(this.reactContext);
+    }
+
+    /**
      * 获取设备的token，只有注册成功才能获取到正常的结果
      *
      * @param cb
@@ -441,60 +484,89 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
         XGPushConfig.setReportApplistEnable(this.reactContext, debugMode);
     }
 
-    @ReactMethod
-    public void setAccessId(String accessId) {
-        try {
-            XGPushConfig.setAccessId(this.reactContext, Long.parseLong(accessId));
-        } catch (NumberFormatException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    @ReactMethod
-    public long getAccessId() {
-        return XGPushConfig.getAccessId(this.reactContext);
-    }
-
-    @ReactMethod
-    public void setAccessKey(String accessKey) {
-        XGPushConfig.setAccessKey(this.reactContext, accessKey);
-    }
-
     /**
-     * 获取accessKey
-     *
-     * @return accessKey
-     */
-    @ReactMethod
-    public String getAccessKey() {
-        return XGPushConfig.getAccessKey(this.reactContext);
-    }
-
-    /**
-     * 第三方推送开关
+     * 设置支持第三方厂商推送
      * 需要在 registerPush 之前调用
+     *
+     * @param isEnable
      */
     @ReactMethod
     public void enableOtherPush(boolean isEnable) {
         XGPushConfig.enableOtherPush(this.reactContext, isEnable);
     }
 
+    /**
+     * 设置小米推送APPID
+     *
+     * @param appid
+     */
     @ReactMethod
-    public void setHuaweiDebug(boolean isDebug) {
-        XGPushConfig.setHuaweiDebug(isDebug);
+    public void setMiPushAppId(String  appid) {
+        XGPushConfig.setMiPushAppId(this.reactContext, appid);
     }
 
+    /**
+     * 设置小米推送APPKEY
+     *
+     * @param appkey
+     */
+    @ReactMethod
+    public void setMiPushAppKey(String  appkey) {
+        XGPushConfig.setMiPushAppKey(this.reactContext, appkey);
+    }
+
+    /**
+     * 初始化小米
+     * @param appId
+     * @param appKey
+     */
     @ReactMethod
     public void initXiaomi(String appId, String appKey) {
         XGPushConfig.setMiPushAppId(this.reactContext, appId);
         XGPushConfig.setMiPushAppKey(this.reactContext, appKey);
     }
 
+    /**
+     * 设置魅族推送APPID
+     *
+     * @param appid
+     */
+    @ReactMethod
+    public void setMzPushAppId(String  appid) {
+        XGPushConfig.setMiPushAppId(this.reactContext, appid);
+    }
+
+    /**
+     * 设置魅族推送APPKEY
+     *
+     * @param appkey
+     */
+    @ReactMethod
+    public void setMzPushAppKey(String  appkey) {
+        XGPushConfig.setMiPushAppKey(this.reactContext, appkey);
+    }
+
+    /**
+     * 初始化魅族
+     *
+     * @param appId
+     * @param appKey
+     */
     @ReactMethod
     public void initMeizu(String appId, String appKey) {
         //设置魅族APPID和APPKEY
         XGPushConfig.setMzPushAppId(this.reactContext, appId);
         XGPushConfig.setMzPushAppKey(this.reactContext, appKey);
+    }
+
+    /**
+     * 华为手机的写日志定位问题
+     *
+     * @param isDebug
+     */
+    @ReactMethod
+    public void setHuaweiDebug(boolean isDebug) {
+        XGPushConfig.setHuaweiDebug(isDebug);
     }
 
     @ReactMethod
@@ -519,11 +591,21 @@ public class TencentPushModule extends ReactContextBaseJavaModule {
         cb.invoke(0, params);
     }
 
+    /**
+     * 获取应用图标的 Badge 数字
+     *
+     * @param callback
+     */
     @ReactMethod
     public void getApplicationIconBadgeNumber(Callback callback) {
         callback.invoke(this.badge);
     }
 
+    /**
+     * 设置应用图标的 Badge 数字
+     *
+     * @param number
+     */
     @ReactMethod
     public void setApplicationIconBadgeNumber(int number) {
         this.badge = number;
