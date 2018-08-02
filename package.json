@@ -1,18 +1,26 @@
 {
   "name": "react-native-tencent-push",
-  "version": "0.0.1",
-  "description": "react-native sdk for tencent push",
+  "version": "0.0.2",
+  "description": "a xgpush plugin for react native application",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shixiaoquan/react-native-tencent-push.git"
   },
   "keywords": [
+    "xgpush",
     "react-native",
-    "push",
-    "xg",
-    "xinge",
-    "mobile"
+    "android",
+    "ios",
+    "RN"
   ],
-  "author": "shixiaoquan",
-  "license": "MIT"
+  "author": "rain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shixiaoquan/react-native-tencent-push/issues"
+  },
+  "homepage": "https://github.com/shixiaoquan/react-native-tencent-push#readme"
 }
