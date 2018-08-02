@@ -1,24 +1,19 @@
-
-/**
- * @param {object} [ctx]
- * @return {{ [string]: (Recipe|Recipe[]) }}
- */
-module.exports = (ctx = defaultContext) => ({
-  'android/settings.gradle': {
-    pattern: `rootProject.name.*`,
-    patch: `
-      include ':react-native-tencent-push'
-      project(':react-native-tencent-push').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-tencent-push/android')
-    `
-  },
+// 'android/settings.gradle': {
+module.exports = {
+  //   pattern: `rootProject.name.*`,
+  //   patch: `
+  //     include ':react-native-tencent-push'
+  //     project(':react-native-tencent-push').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-tencent-push/android')
+  //   `
+  // },
 
   'android/app/build.gradle': [
-    {
-      pattern: 'dependencies {',
-      patch: `
-        compile project(':react-native-tencent-push')
-      `
-    },
+    // {
+    //   pattern: 'dependencies {',
+    //   patch: `
+    //     compile project(':react-native-tencent-push')
+    //   `
+    // },
     {
       pattern: `versionName .*`,
       patch: `
@@ -87,4 +82,4 @@ module.exports = (ctx = defaultContext) => ({
   //     `
   //   }
   // ]
-})
+};

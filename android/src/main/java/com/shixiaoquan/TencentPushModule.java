@@ -1,4 +1,4 @@
-package com.rain.day;
+package com.shixiaoquan;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -31,10 +31,10 @@ import me.leolin.shortcutbadger.ShortcutBadger;
  * Created by rain on 2018/3/26.
  */
 
-public class XGPushModule extends ReactContextBaseJavaModule {
+public class TencentPushModule extends ReactContextBaseJavaModule {
 
-    public static final String MODULE_NAME = "XGPushModule";
-    private static String TAG = "XGPushModule";
+    public static final String MODULE_NAME = "TencentPushModule";
+    private static String TAG = "TencentPushModule";
 
     private Context reactContext;
     private int badge = 0;
@@ -47,7 +47,7 @@ public class XGPushModule extends ReactContextBaseJavaModule {
     private static HashMap<Integer, Callback> sCacheMap = new HashMap<Integer, Callback>();
 
 
-    XGPushModule(ReactApplicationContext reactContext){
+    TencentPushModule(ReactApplicationContext reactContext){
         super(reactContext);
         this.reactContext = reactContext;
         registerReceivers();

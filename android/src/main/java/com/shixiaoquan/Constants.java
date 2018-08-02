@@ -1,20 +1,20 @@
-package com.rain.day;
+package com.shixiaoquan;
 
 /**
  * 常量
  * Created by Jeepeng on 16/8/15.
  */
 public class Constants {
-    public static final String ACTION_ON_REGISTERED = "XGPushnRegisterResult";
-    public static final String ACTION_ON_TEXT_MESSAGE = "XGPushonTextMessage";
+    public static final String ACTION_ON_REGISTERED = "TencentPushOnRegisterResult";
+    public static final String ACTION_ON_TEXT_MESSAGE = "TencentPushOnTextMessage";
     /**
      * 收到通知
      */
-    public static final String ACTION_ON_NOTIFICATION_SHOWED = "XGPushnNotifactionShowedResult";
+    public static final String ACTION_ON_NOTIFICATION_SHOWED = "TencentPushOnNotifactionShowedResult";
     /**
      * 通知被点击
      */
-    public static final String ACTION_ON_NOTIFICATION_CLICKED = "XGPushOnNotifactionClickedResult";
+    public static final String ACTION_ON_NOTIFICATION_CLICKED = "TencentPushOnNotifactionClickedResult";
 
     public static final String EVENT_REGISTERED_ID = "getRegistrationId";
     /**

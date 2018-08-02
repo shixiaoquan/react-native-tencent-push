@@ -1,4 +1,4 @@
-package com.rain.day;
+package com.shixiaoquan;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
@@ -13,12 +13,12 @@ import java.util.List;
  * Created by rain on 2018/3/26.
  */
 
-public class XGPushPackage implements ReactPackage {
+public class TencentPushPackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext){
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new XGPushModule(reactContext));
+        modules.add(new TencentPushModule(reactContext));
         return  modules;
     }
 

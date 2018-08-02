@@ -38,7 +38,7 @@
             </intent-filter>
         </receiver>
         <!-- YOUR_PACKAGE_PATH.CustomPushReceiver需要改为自己的Receiver： -->
-        <receiver android:name="com.rain.day.MessageReceiver"
+        <receiver android:name="com.shixiaoquan.MessageReceiver"
             android:exported="true" >
             <intent-filter>
                 <!-- 接收消息透传 -->

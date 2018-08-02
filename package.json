@@ -1,7 +1,7 @@
 {
   "name": "react-native-tencent-push",
-  "version": "0.0.2",
-  "description": "a xgpush plugin for react native application",
+  "version": "0.0.1",
+  "description": "tencent push for react native",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,10 +17,18 @@
     "ios",
     "RN"
   ],
-  "author": "rain",
+  "author": "shixiaoquan",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/shixiaoquan/react-native-tencent-push/issues"
   },
-  "homepage": "https://github.com/shixiaoquan/react-native-tencent-push#readme"
+  "homepage": "https://github.com/shixiaoquan/react-native-tencent-push#readme",
+  "rnpm": {
+    "commands": {
+      "prelink": "node node_modules/react-native-tencent-push/scripts/patch"
+    }
+  },
+  "dependencies": {
+    "mpatch": "^0.1.2"
+  }
 }
